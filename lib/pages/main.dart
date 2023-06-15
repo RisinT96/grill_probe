@@ -11,9 +11,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  var devices = <String, BleProbe>{};
-  final flutterReactiveBle = FlutterReactiveBle();
-
   @override
   void initState() {
     super.initState();
