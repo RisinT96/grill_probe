@@ -1,3 +1,4 @@
+import 'package:bluetooth_enable_fork/bluetooth_enable_fork.dart';
 import 'package:flutter/material.dart';
 import 'package:grill_probe/pages/main.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -45,11 +46,15 @@ class RequestPermissionsPage extends StatelessWidget {
                     ].request().then(
                       (value) {
                         if (!value.containsValue(PermissionStatus.denied)) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainPage()),
-                          );
+                          BluetoothEnable.enableBluetooth.then((result) {
+                            if (result == "true") {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MainPage()),
+                              );
+                            }
+                          });
                         }
                       },
                     );

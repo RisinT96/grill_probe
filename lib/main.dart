@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:grill_probe/pages/main.dart';
 import 'package:grill_probe/pages/request_permissions.dart';
-import 'package:grill_probe/widgets/blob.dart';
-import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:system_theme/system_theme.dart';
-
-Logger get logger => Log.instance;
-
-class Log extends Logger {
-  Log._() : super(printer: PrettyPrinter(printTime: true));
-  static final instance = Log._();
-}
 
 void main() async {
   await SystemTheme.accentColor.load();
@@ -29,6 +21,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Future<List<bool>> permissions;
+  final _ble = FlutterReactiveBle();
+
+  Future<bool> initBle() async {
+    // First result is always unknown 🤷🏻‍♂️
+    final status = await _ble.statusStream.elementAt(1);
+    return (status == BleStatus.ready);
+  }
 
   @override
   void initState() {
@@ -37,6 +36,7 @@ class _MyAppState extends State<MyApp> {
       Permission.location.isGranted,
       Permission.bluetoothScan.isGranted,
       Permission.bluetoothConnect.isGranted,
+      initBle(),
     ];
 
     permissions = Future.wait(futures);
