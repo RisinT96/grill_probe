@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:grill_probe/Probes/ble_probe.dart';
-import 'package:grill_probe/log.dart' show logger;
+import 'package:grill_probe/widgets/probe_list_widget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,9 +16,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
-        child: Center(child: BleProbeList()),
+        child: Center(child: ProbeListWidget()),
       ),
     );
   }
