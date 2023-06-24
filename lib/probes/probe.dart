@@ -23,11 +23,16 @@ class Probe {
   StreamSubscription<ConnectionStateUpdate>? _connectionStateSubscription;
   StreamSubscription<List<int>>? _temperaturesSubscription;
 
+  double _innerTemperature = 0;
+  double _outerTemperature = 0;
+
   Probe(this.device, this._onStateChange);
 
-  get isConnected => connectionState == DeviceConnectionState.connected;
-  get isTimedOut => _ble.scanRegistry.deviceIsDiscoveredRecently(
+  bool get isConnected => connectionState == DeviceConnectionState.connected;
+  bool get isTimedOut => _ble.scanRegistry.deviceIsDiscoveredRecently(
       deviceId: device.id, cacheValidity: _validityTimeout);
+  double get innerTemperature => _innerTemperature;
+  double get outerTemperature => _outerTemperature;
 
   void dispose() {
     logger.d("[${device.id}] Disposing.");
@@ -137,6 +142,9 @@ class Probe {
       "Inner temperature: $innerTemperature, "
       "Outer temperature: $outerTemperature",
     );
+
+    _innerTemperature = innerTemperature;
+    _outerTemperature = outerTemperature;
 
     _onStateChange();
   }

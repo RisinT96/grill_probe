@@ -25,25 +25,74 @@ class ProbeWidget extends StatelessWidget {
       foreground = colorScheme.onSurfaceVariant;
     }
 
-    final textStyle = theme.textTheme.titleMedium!.copyWith(color: foreground);
+    final nameStyle = theme.textTheme.titleMedium!.copyWith(color: foreground);
+    final temperatureStyle =
+        theme.textTheme.titleSmall!.copyWith(color: foreground);
 
+    if (!state.isConnected) {
+      // Disconnected
+      return Card(
+        color: background,
+        child: TextButton(
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              state.device.name.isEmpty ? state.device.id : state.device.name,
+              style: nameStyle,
+            ),
+          ),
+          onPressed: () {
+            if (state.connectionState == DeviceConnectionState.connected) {
+              state.disconnect();
+              return;
+            }
+            state.connect();
+          },
+        ),
+      );
+    }
+
+    // Connected
     return Card(
       color: background,
-      child: TextButton(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(
-            state.device.name.isEmpty ? state.device.id : state.device.name,
-            style: textStyle,
+      child: Column(
+        children: [
+          TextButton(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                state.device.name.isEmpty ? state.device.id : state.device.name,
+                style: nameStyle,
+              ),
+            ),
+            onPressed: () {
+              if (state.connectionState == DeviceConnectionState.connected) {
+                state.disconnect();
+                return;
+              }
+              state.connect();
+            },
           ),
-        ),
-        onPressed: () {
-          if (state.connectionState == DeviceConnectionState.connected) {
-            state.disconnect();
-            return;
-          }
-          state.connect();
-        },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  state.innerTemperature.toString(),
+                  style: temperatureStyle,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  state.outerTemperature.toString(),
+                  style: temperatureStyle,
+                ),
+              )
+            ],
+          )
+        ],
       ),
     );
   }
